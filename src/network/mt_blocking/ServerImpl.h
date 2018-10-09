@@ -3,7 +3,9 @@
 
 #include <atomic>
 #include <thread>
-
+#include <map>
+#include <mutex>
+#include <condition_variable>
 #include <afina/network/Server.h>
 
 namespace spdlog {
@@ -33,6 +35,7 @@ public:
     void Join() override;
 
 protected:
+
     /**
      * Method is running in the connection acceptor thread
      */
@@ -52,6 +55,14 @@ private:
 
     // Thread to run network on
     std::thread _thread;
+
+    std::map<int, std::thread> _threads;
+    int max_thread_count;
+    std::mutex mtx;
+    std::condition_variable exit_cond_var;
+
+    void _process_connection(int client_socket);
+
 };
 
 } // namespace MTblocking

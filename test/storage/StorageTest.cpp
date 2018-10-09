@@ -16,6 +16,7 @@ using namespace Afina::Backend;
 using namespace Afina::Execute;
 using namespace std;
 
+
 TEST(StorageTest, PutGet) {
     SimpleLRU storage;
 
@@ -57,18 +58,18 @@ std::string pad_space(const std::string &s, size_t length) {
     result.resize(length, ' ');
     return result;
 }
-
 TEST(StorageTest, BigTest) {
     const size_t length = 20;
-    SimpleLRU storage(2 * 100000 * length);
+    int items_count = 100000;
+    SimpleLRU storage(2 * items_count * length);
 
-    for (long i = 0; i < 100000; ++i) {
+    for (long i = 0; i < items_count; ++i) {
         auto key = pad_space("Key " + std::to_string(i), length);
         auto val = pad_space("Val " + std::to_string(i), length);
         storage.Put(key, val);
     }
 
-    for (long i = 99999; i >= 0; --i) {
+    for (long i = items_count - 1; i >= 0; --i) {
         auto key = pad_space("Key " + std::to_string(i), length);
         auto val = pad_space("Val " + std::to_string(i), length);
 
@@ -77,6 +78,7 @@ TEST(StorageTest, BigTest) {
 
         EXPECT_TRUE(val == res);
     }
+
 }
 
 TEST(StorageTest, MaxTest) {
@@ -84,6 +86,7 @@ TEST(StorageTest, MaxTest) {
     SimpleLRU storage(2 * 1000 * length);
 
     std::stringstream ss;
+
 
     for (long i = 0; i < 1100; ++i) {
         auto key = pad_space("Key " + std::to_string(i), length);
